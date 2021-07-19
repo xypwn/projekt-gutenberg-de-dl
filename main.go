@@ -45,6 +45,10 @@ Output types:
 	os.Exit(exitStatus)
 }
 
+func clearLine() {
+	fmt.Print("\033[2K")
+}
+
 func printInfo(f string, v ...interface{}) {
 	fmt.Printf("* "+f+"\n", v...)
 }
@@ -131,7 +135,7 @@ func NewExtractor(rawurl string, w io.Writer) (*Extractor, error) {
 	}
 	return &Extractor{
 		BaseUrl: baseUrl,
-		W: w,
+		W:       w,
 	}, nil
 }
 
@@ -258,7 +262,7 @@ func (e *Extractor) parseAdditionalPage(doc *gq.Document) error {
 				if hasClass("centerbig") {
 					ret = "#### " + processChildren() + "\n\n"
 				} else {
-					ret = /*"    " + */processChildren() + "\n\n"
+					ret = /*"    " + */ processChildren() + "\n\n"
 				}
 			case atom.Div:
 				ret = processChildren()
@@ -272,7 +276,8 @@ func (e *Extractor) parseAdditionalPage(doc *gq.Document) error {
 				ret = processChildren()
 			case atom.Img:
 			default:
-				printWarn("Unknown data atom:", n.Data)
+				clearLine()
+				printWarn("Unknown data atom: %v", n.Data)
 			}
 			// Add some CSS effects.
 			if hasClass("spaced") {
@@ -289,7 +294,8 @@ func (e *Extractor) parseAdditionalPage(doc *gq.Document) error {
 				ret = newRet
 			}
 		default:
-			printWarn("Unknown type:", n.Type)
+			clearLine()
+			printWarn("Unknown type: %v", n.Type)
 		}
 		return ret
 	}
@@ -382,7 +388,8 @@ func main() {
 
 	// Download the actual chapters.
 	for i, chapter := range e.ChapterUrls {
-		fmt.Printf("\033[2K* Downloading chapter %v/%v...\r", i+1, len(e.ChapterUrls))
+		clearLine()
+		fmt.Printf("* Downloading chapter %v/%v...\r", i+1, len(e.ChapterUrls))
 		err = e.FetchAndProcessChapter(chapter)
 		if err != nil {
 			panic(err)
@@ -390,7 +397,8 @@ func main() {
 	}
 
 	// Write the generated markdown text to a file.
-	filename := path.Join(dir, bookName + ".md")
+	filename := path.Join(dir, bookName+".md")
 	os.WriteFile(filename, b.Bytes(), 0666)
+	clearLine()
 	printInfo("Saved as: %v", filename)
 }
