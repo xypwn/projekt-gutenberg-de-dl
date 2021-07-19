@@ -241,7 +241,7 @@ func (e *Extractor) parseAdditionalPage(doc *gq.Document) error {
 			// Transform the individual HTML elements.
 			switch n.DataAtom {
 			case atom.Br:
-				ret = "\n"
+				ret = "\n\n"
 			case atom.H1:
 				ret = "# " + processChildren() + "\n"
 			case atom.H2:
@@ -318,7 +318,7 @@ func (e *Extractor) FetchAndProcessChapter(chapterUrl string) error {
 	}
 	// Add horizontal rule after title page.
 	if path.Base(chapterUrl) == "titlepage.html" {
-		fmt.Fprintln(e.W, "----------------")
+		fmt.Fprintln(e.W, "\n----------------\n")
 	}
 	return nil
 }
