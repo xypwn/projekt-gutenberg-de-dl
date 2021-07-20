@@ -23,8 +23,8 @@ var (
 )
 
 const (
-	colRed    = "\033[31m"
-	colYellow = "\033[33m"
+	colRed    = "\033[31;1m"
+	colYellow = "\033[33;1m"
 	colReset  = "\033[m"
 )
 
@@ -377,11 +377,11 @@ func main() {
 	var b bytes.Buffer
 	e, err := NewExtractor(url, &b)
 	if err != nil {
-		panic(err)
+		printErr("Error: %v", err)
 	}
 	err = e.FetchAndProcessIndex()
 	if err != nil {
-		panic(err)
+		printErr("Error: %v", err)
 	}
 	bookName := e.Meta.ToTitle()
 	printInfo("Book: %v", bookName)
@@ -392,7 +392,7 @@ func main() {
 		fmt.Printf("* Downloading chapter %v/%v...\r", i+1, len(e.ChapterUrls))
 		err = e.FetchAndProcessChapter(chapter)
 		if err != nil {
-			panic(err)
+			printErr("Error: %v", err)
 		}
 	}
 
