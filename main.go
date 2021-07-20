@@ -20,6 +20,7 @@ var (
 	ErrInvalidURL      = errors.New("invalid url")
 	ErrNoChaptersFound = errors.New("no chapters found in index")
 	ErrParsingPage     = errors.New("error parsing page")
+	ErrBookNotFound    = errors.New("book not found")
 )
 
 const (
@@ -144,6 +145,9 @@ func (e *Extractor) FetchAndProcessIndex() error {
 	resp, err := http.Get(e.BaseUrl)
 	if err != nil {
 		return err
+	}
+	if resp.StatusCode == 404 {
+		return ErrBookNotFound
 	}
 	defer resp.Body.Close()
 	// Parse HTML via Goquery.
