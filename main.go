@@ -340,7 +340,6 @@ func main() {
 	if len(os.Args) < 2 {
 		usage(os.Args[0], 1)
 	}
-
 	// Parse command line arguments.
 	for i := 1; i < len(os.Args); i++ {
 		// Returns the argument after the given option. Errors if there is no
